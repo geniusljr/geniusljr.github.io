@@ -1,0 +1,58 @@
+<html ng-app="myApp">
+<head>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.1/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="../dist/angular-d3.js"></script>
+  <script src="http://d3js.org/topojson.v1.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dist/jquery.tipsy.js"></script>
+  <link href="../dist/tipsy.css" rel="stylesheet" type="text/css" />
+  <style>
+    select {
+      position: fixed;
+      top: 0px;
+      left: 10px;
+    }
+    .overlay {
+      fill: none;
+      pointer-events: all;
+    }
+
+    .land {
+      fill: #e5e5e5;
+    }
+
+    .boundary {
+      fill: none;
+      stroke: grey;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    .COUNTRY1 { fill: orange; }
+    .COUNTRY2 { fill: green; }
+    .COUNTRY3 { fill: red; }
+    .COUNTRY4 { fill: purple; }
+    .COUNTRY5 { fill: chocolate; }
+    .COUNTRY6 { fill: pink; }
+    .COUNTRY7 { fill: darkGray; }
+    .other { fill: blue;}
+
+    .q0-9 { fill:rgb(247,251,255); }
+    .q1-9 { fill:rgb(222,235,247); }
+    .q2-9 { fill:rgb(198,219,239); }
+    .q3-9 { fill:rgb(158,202,225); }
+    .q4-9 { fill:rgb(107,174,214); }
+    .q5-9 { fill:rgb(66,146,198); }
+    .q6-9 { fill:rgb(33,113,181); }
+    .q7-9 { fill:rgb(8,81,156); }
+    .q8-9 { fill:rgb(8,48,107); }
+  </style>
+</head>
+<body ng-controller="MainCtrl">
+    <select ng-model="selectCompany" ng-options="c.name for c in companies" ng-change="searchForCompany(slectCompany.name)">
+      <option value="">-- choose company --</option>
+    </select>
+    <script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>

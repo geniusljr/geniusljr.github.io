@@ -1,0 +1,21 @@
+<html>
+<head>
+    <title>Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body>
+    <script type="text/javascript">
+        var position = {};
+        position.latitude = '-26.8082848';
+        position.longitude = '-65.2175903';
+
+         $.post("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.latitude + "," + position.longitude + "&sensor=false", function (result) {
+                for (var i = 0; i < result['results'][0]['address_components'].length; i++) {
+                    if (result['results'][0]['address_components'][i]['types'][0] == "country") {
+                        alert(result['results'][0]['address_components'][i]['long_name']);
+                    }
+                }
+            });
+    </script>
+</body>
+</html>
