@@ -51,8 +51,8 @@ app.controller('MainCtrl', function($scope){
   // find all company
   // http://localhost:8983/solr/collection1/select?q=*:*&wt=json&facet=true&facet.field=company
   $scope.companies = [
-    {name: 'Adecco Argentina S.A.'},
-    {name: 'SENSI s.r.l.'},
+    {name: 'Gendigital'},
+    {name: '\"Search S.A.\"'},
     {name: 'Guía Laboral SRL'},
     {name: 'Grupo Gestión'}
   ];
@@ -77,6 +77,11 @@ app.controller('MainCtrl', function($scope){
           for(var i=0; i<data.length; i++){
               var point = [data[i].longitude, data[i].latitude];
               data[i]['point'] = point;
+              console.log(data[i].company);
+              var geoNameURL = "http://api.geonames.org/countryCodeJSON?lat="+data[i].latitude+"&lng="+data[i].longitude+"&username=geniusljr"
+              jQuery.getJSON(geoNameURL, function(countryData) {
+                console.log(countryData.countryName);
+              });
           }
 
           svg.selectAll("circle").remove();
@@ -86,7 +91,8 @@ app.controller('MainCtrl', function($scope){
                   .attr("cx", function (d) { return projection(d.point)[0]; })
                   .attr("cy", function (d) { return projection(d.point)[1]; })
                   .attr("r", "3px")
-                  .attr("class", 'q5-9');
+                  .attr("class", 'q6-9')
+                  .attr("");
 
           $('svg circle').tipsy({ 
             gravity: 'w', 
