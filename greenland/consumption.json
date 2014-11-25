@@ -1,8 +1,8 @@
 {
- "name": "consumption",
+ "name": "income after tax",
  "children": [
   {
-   "name": "Average Annual Expenditures",
+   "name": "Average Annual Expenditure",
    "children": [
       {"name": "Food", "size": 10.2},
       {"name": "Alcoholic beverages", "size": 1.2},
