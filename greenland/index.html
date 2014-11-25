@@ -14,9 +14,9 @@ text {
 
 </style>
 <body>
-<br/><br/>
+  <h1 style="margin-left:200px">Mona Li's Consumption Structure</h1>
 <script src="http://d3js.org/d3.v3.min.js"></script>
-<br/><br/>
+<br/>
 <script>
 
 var width = 960,
@@ -53,7 +53,7 @@ d3.json("consumption.json", function(error, root) {
 
   var path = g.append("path")
     .attr("d", arc)
-    .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+    .style("fill", function(d) { return color((d.children ? d : d.parent).name + Math.random()); })
     .on("click", click);
 
   var text = g.append("text")
