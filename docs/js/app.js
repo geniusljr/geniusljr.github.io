@@ -47,7 +47,7 @@ app.controller('MainCtrl', function($scope){
   var countries = new Array();
   var salaries = new Array();
   //méxico, Perú
-  var COUNTRY = ['argentina','colombia','dominican','honduras','xico','per','venezuela',''];
+  var COUNTRY = ['argentina','colombia','dominican','honduras','mexico','puerto rico','venezuela',''];
   // find all company
   // http://localhost:8983/solr/collection1/select?q=*:*&wt=json&facet=true&facet.field=company
   $scope.companies = [
@@ -72,46 +72,56 @@ app.controller('MainCtrl', function($scope){
     jQuery.ajax({
       'url': 'http://localhost:8983/solr/select/',
       'data': param,
+      'dataType': 'jsonp',
+      'jsonp': 'json.wrf',
       'success': function(responses) { 
           var data = responses.response.docs;
           for(var i=0; i<data.length; i++){
               var point = [data[i].longitude, data[i].latitude];
               data[i]['point'] = point;
-              console.log(data[i].company);
-              var geoNameURL = "http://api.geonames.org/countryCodeJSON?lat="+data[i].latitude+"&lng="+data[i].longitude+"&username=geniusljr"
-              jQuery.getJSON(geoNameURL, function(countryData) {
-                console.log(countryData.countryName);
-              });
+              data[i]['country'] = '';
+              (function(data) {
+                var geoNameURL = "http://api.geonames.org/countryCodeJSON?lat="+data.latitude+"&lng="+data.longitude+"&username=geniusljr";
+                jQuery.getJSON(geoNameURL, function(countryData) {
+                  console.log(countryData.countryName);
+                  if(typeof countryData.countryName !== 'undefined'){
+                    data['country'] = countryData.countryName;
+                  }
+                });
+              })(data[i]);
           }
 
-          svg.selectAll("circle").remove();
-          var circles = svg.selectAll("circle")
-                  .data(data).enter()
-                  .append("circle")
-                  .attr("cx", function (d) { return projection(d.point)[0]; })
-                  .attr("cy", function (d) { return projection(d.point)[1]; })
-                  .attr("r", "3px")
-                  .attr("class", 'q6-9')
-                  .attr("");
+          jQuery(document).ajaxComplete(function(){
+              svg.selectAll("circle").remove();
 
-          $('svg circle').tipsy({ 
-            gravity: 'w', 
-            html: true, 
-            title: function() {
-              var d = this.__data__;
-              var tmp = "";
-              for(var key in d){
-                  if (key === 'point'){
-                    continue;
+              var circles = svg.selectAll("circle")
+                      .data(data).enter()
+                      .append("circle")
+                      .attr("cx", function (d) { return projection(d.point)[0]; })
+                      .attr("cy", function (d) { return projection(d.point)[1]; })
+                      .attr("r", "3px")
+                      .attr("class", function (d) { return 'COUNTRY'+(COUNTRY.indexOf(d.country.toLowerCase())+1); })
+                      .attr("");
+
+              $('svg circle').tipsy({ 
+                gravity: 'w', 
+                html: true, 
+                title: function() {
+                  var d = this.__data__;
+                  var tmp = "";
+                  for(var key in d){
+                      if (key === 'point'){
+                        continue;
+                      }
+                      tmp += '<div>'+key+': <span style="color: yellow">' + d[key] + '</span>';
                   }
-                  tmp += '<div>'+key+': <span style="color: yellow">' + d[key] + '</span>';
-              }
-              return tmp;
-            }
-          });
-      },
-      'dataType': 'jsonp',
-      'jsonp': 'json.wrf'
+                  return tmp;
+                }
+              });
+
+          }); // end of ajaxComplete
+      } // end of success
+
     });
   }
 });
