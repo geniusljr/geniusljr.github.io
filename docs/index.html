@@ -27,31 +27,13 @@
       stroke: grey;
       stroke-linejoin: round;
       stroke-linecap: round;
+      stroke-width: .5px;
     }
-
-    .COUNTRY1 { fill: orange; }
-    .COUNTRY2 { fill: green; }
-    .COUNTRY3 { fill: red; }
-    .COUNTRY4 { fill: purple; }
-    .COUNTRY5 { fill: chocolate; }
-    .COUNTRY6 { fill: pink; }
-    .COUNTRY7 { fill: darkGray; }
-    .COUNTRY0 { fill: blue;}
-
-    .q0-9 { fill:rgb(247,251,255); }
-    .q1-9 { fill:rgb(222,235,247); }
-    .q2-9 { fill:rgb(198,219,239); }
-    .q3-9 { fill:rgb(158,202,225); }
-    .q4-9 { fill:rgb(107,174,214); }
-    .q5-9 { fill:rgb(66,146,198); }
-    .q6-9 { fill:rgb(33,113,181); }
-    .q7-9 { fill:rgb(8,81,156); }
-    .q8-9 { fill:rgb(8,48,107); }
   </style>
 </head>
 <body ng-controller="MainCtrl">
-    <select ng-model="selectCompany" ng-options="c.name for c in companies" ng-change="searchForCompany(slectCompany.name)">
-      <option value="">-- choose company --</option>
+    <select ng-model="selectDisplayMethod" ng-options="dm.name for dm in displayMethods" ng-change="displayByMethod(selectDisplayMethod.name)">
+      <option value="">-- choose display method --</option>
     </select>
     <script type="text/javascript" src="js/app.js"></script>
 </body>
