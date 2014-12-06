@@ -27,7 +27,7 @@ app.controller('MainCtrl', function($scope){
   var color = d3.scale.category20();
   var radius = d3.scale.sqrt()
       .domain([0, 100])
-      .range([2, 20]);
+      .range([2, 5]);
 
   svg.append("rect")
       .attr("class", "overlay")
@@ -95,14 +95,13 @@ app.controller('MainCtrl', function($scope){
   }
 
   function getDateOrder(year, month) {
-    return (year-110)*4+parseInt(month/3);//110 is 2010.
+    return (year-112)*12+parseInt(month);//110 is 2010.
   }
 
   function getDateString(dateOrder) {
-    var year = parseInt(dateOrder/4)+2010;
-    var season = dateOrder%4;
-    var startMonth = season*3+1;
-    var str = "Year: " + year + " Month: " + startMonth + "-"+ (startMonth+2);
+    var year = parseInt(dateOrder/12)+2012;
+    var month = dateOrder%12;
+    var str = "Year: " + year + " Month: " + (month+1);
     return str;
   }
     
@@ -199,7 +198,7 @@ app.controller('MainCtrl', function($scope){
         'q':'*:*', 
         'fq': 'company:\"' + $scope.selectDisplayCompany.name + '\"',
         'fl': 'latitude and longitude and postedDate',
-        'rows': 2700
+        'rows': 50000
     };
 
     jQuery.ajax({
@@ -213,9 +212,11 @@ app.controller('MainCtrl', function($scope){
 
         for (var i = 0; i < data.length; i++) {
           var point = [data[i].longitude, data[i].latitude];
-          var date = dateFormat.parse(data[i].postedDate);
+          var date = new Date(data[i].postedDate);
           data[i]['point'] = point;
-          data[i]['colorBase'] = getDateOrder(date.getYear(), date.getMonth());
+          if (date != null){
+            data[i]['colorBase'] = getDateOrder(date.getYear(), date.getMonth());
+          }
         }
 
         jQuery(document).ajaxComplete(function(){
@@ -250,7 +251,7 @@ app.controller('MainCtrl', function($scope){
               });
 
               svg.selectAll("circle").style('visibility', "hidden");
-              var count = -1;
+              var count = 8;
               var refreshIntervalId = setInterval(function(){
                 count++;
                 svg.selectAll("circle")
@@ -259,7 +260,7 @@ app.controller('MainCtrl', function($scope){
                   })
                   .style('visibility','')
                   $('#datebar').html(getDateString(count));
-                  if(count > 15){
+                  if(count > 22){
                     clearInterval(refreshIntervalId);
                   }
               }, 1000);
@@ -285,7 +286,7 @@ app.controller('MainCtrl', function($scope){
         'wt':'json',
         'q':'*:*', 
         'fl': 'latitude and longitude and company and salary and location2 and jobtype',
-        'rows': 2700
+        'rows': 50000
     };
 
     jQuery.ajax({
@@ -329,7 +330,7 @@ app.controller('MainCtrl', function($scope){
           }
 
           for (var i = 0; i < data.length; i++) {
-            if ($scope.selectDisplayMethod.name == "Company") {
+            if ($scope.taskID === 'Task1' && $scope.selectDisplayMethod.name == "Company") {
               data[i]['size'] = radius(categoryCount[data[i].company]);
             } else {
               data[i]['size'] = "2px";
@@ -354,6 +355,9 @@ app.controller('MainCtrl', function($scope){
                             .style("fill", function(d) { return color(d.colorBase); })
                             .style("fill-opacity", function(d){ 
                                 if($scope.taskID !== 'Task3' || ($scope.taskID === 'Task3' && isSouthAmerica(getCountryName(d.location2)))){
+                                  if($scope.taskID === 'Task1' && $scope.selectDisplayMethod.name === 'Company'){
+                                    return 0.8;
+                                  }
                                   return 1;
                                 }else{
                                   return 0;
@@ -449,7 +453,7 @@ app.controller('MainCtrl', function($scope){
         'q':'*:*', 
         'fq': query_field[$scope.selectDisplayCategory.name],
         'fl': 'latitude and longitude and postedDate and title',
-        'rows': 2700
+        'rows': 50000
     };
 
     jQuery.ajax({
@@ -463,7 +467,7 @@ app.controller('MainCtrl', function($scope){
 
         for (var i = 0; i < data.length; i++) {
           var point = [data[i].longitude, data[i].latitude];
-          var date = dateFormat.parse(data[i].postedDate);
+          var date = new Date(data[i].postedDate);
           data[i]['point'] = point;
           data[i]['colorBase'] = getDateOrder(date.getYear(), date.getMonth());
         }
@@ -502,7 +506,7 @@ app.controller('MainCtrl', function($scope){
               svg.selectAll("circle")
                   .style('visibility', "hidden");
 
-              var count = -1;
+              var count = 8;
               var refreshIntervalId = setInterval(function(){
                 count++;
                 svg.selectAll("circle")
@@ -511,7 +515,7 @@ app.controller('MainCtrl', function($scope){
                   })
                   .style('visibility','')
                   $('#datebar').html(getDateString(count));
-                  if(count > 15){
+                  if(count > 22){
                     clearInterval(refreshIntervalId);
                   }
               }, 1000);
