@@ -180,7 +180,7 @@ app.controller('MainCtrl', function($scope){
                   colorBase = data[i].salary;
                   break;
               }
-              data[i]['colorBase'] = colorBase;
+              data[i]['colorBase'] = colorBase.toLowerCase();
               data[i]['point'] = point;
               if (colorBase == null) {
                 continue;
