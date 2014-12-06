@@ -27,7 +27,7 @@ app.controller('MainCtrl', function($scope){
   var color = d3.scale.category20();
   var radius = d3.scale.sqrt()
       .domain([0, 100])
-      .range([2, 10]);
+      .range([2, 20]);
 
   svg.append("rect")
       .attr("class", "overlay")
@@ -85,7 +85,15 @@ app.controller('MainCtrl', function($scope){
   }
 
   function getDateOrder(year, month) {
-    return (year-110)*4+(month/3);
+    return (year-110)*4+parseInt(month/3);//110 is 2010.
+  }
+
+  function getDateString(dateOrder) {
+    var year = parseInt(dateOrder/4)+2010;
+    var season = dateOrder%4;
+    var startMonth = season*3+1;
+    var str = "Year: " + year + " Month: " + startMonth + "-"+ (startMonth+2);
+    return str;
   }
     
   $scope.displayTasks = [
@@ -117,7 +125,46 @@ app.controller('MainCtrl', function($scope){
   $scope.selectDisplayCompany = {};
   $scope.selectDisplayCompany.name = "Activos";
 
+  $scope.displayCategories = [
+    {
+      name: 'commercial',
+      key: ["vendedor", "ventas", "comercial", "vendedores", "contador", "compras", "vendedora, venta"]
+    },
+    {
+      name: 'industrial', 
+      key: ["programador", "técnico", "operario", "desarrollador", "ingeniero", "mantenimiento", "developer", "planta", "electrónico", "electromecánico", "industria", "electricista", "administrador"]
+    },
+    {
+      name: 'residential',
+      key: ["desarrolladores"]
+    },
+    {
+      name: 'business',
+      key: ["analista", "consultant", "consultor", "asesor", "marketing", "consultores", "depósito", "deposito"]
+    },
+    {
+      name: 'services',
+      key: ["chofer", "logística", "limpieza", "recepcionista"]
+    }
+  ];
+
+  var query_field = {};
+  for(var i=0; i<$scope.displayCategories.length; i++){
+    var name = $scope.displayCategories[i].name;
+    var query_string = $scope.displayCategories[i].key[0]+'~ or';
+    for(var j=1; j<$scope.displayCategories[i].key.length; j++){
+      query_string += ' '+($scope.displayCategories[i].key[j]+'~');
+      if(j!=$scope.displayCategories[i].key.length-1){
+        query_string += ' or';
+      }
+    }
+    query_field[name] = query_string;
+  }
+
   $scope.displayByTask = function(task) {
+    svg.selectAll("circle").remove();
+    d3.select("#sidebar").selectAll("g").remove();
+    $("#datebar").empty();
     switch(task){
       case "Task1":
         return;
@@ -125,8 +172,10 @@ app.controller('MainCtrl', function($scope){
         this.companiesChangeOverTime();
         return;
       case "Task3":
+        this.displayByMethod();
         return;
       case "Task4":
+        this.categoriesOverTime();
         return;
     }
   }
@@ -166,7 +215,7 @@ app.controller('MainCtrl', function($scope){
                             .attr("cx", function (d) { return projection(d.point)[0]; })
                             .attr("cy", function (d) { return projection(d.point)[1]; })
                             .attr("r", function (d) { return "15px"; })
-                            .style("fill", function(d) { return color(d.month); })
+                            .style("fill", function(d) { return color(d.colorBase); })
                             .style("fill-opacity", 0.6);
 
               $('svg circle').tipsy({ 
@@ -185,21 +234,36 @@ app.controller('MainCtrl', function($scope){
                 }
               });
 
+              var count = -1;
+              setInterval(function(){
+                count = (++count) % 15;
+                svg.selectAll("circle")
+                  .style('visibility','')
+                  .filter(function(c){
+                    return c.colorBase !== count; 
+                  })
+                  .style('visibility', "hidden");
 
+                  $('#datebar').html(getDateString(count));
+              }, 3000);
           }); // end of ajaxComplete
       }
     });
 
   }
 
-
-
   $scope.displayByMethod = function(){
+    if($scope.taskID === 'Task3'){
+      $scope.selectDisplayMethod = {
+        name: 'Company'
+      };
+    }
+
     var points = new Array();
     var param = {
         'wt':'json',
         'q':'*:*', 
-        'fl': 'latitude and longitude and company and salary and location and jobtype',
+        'fl': 'latitude and longitude and company and salary and location2 and jobtype',
         'rows': 2700
     };
 
@@ -219,7 +283,7 @@ app.controller('MainCtrl', function($scope){
               var colorBase = null;
               switch($scope.selectDisplayMethod.name) {
                 case "Country":
-                  colorBase = getCountryName(data[i].location);
+                  colorBase = getCountryName(data[i].location2);
                   break;
                 case "Company":
                   colorBase = data[i].company;
@@ -341,6 +405,79 @@ app.controller('MainCtrl', function($scope){
           }); // end of ajaxComplete
       } // end of success
 
+    });
+  }
+
+  $scope.categoriesChangeOverTime = function(){
+    var points = new Array();
+    var param = {
+        'wt':'json',
+        'q':'*:*', 
+        'fq': query_field[$scope.selectDisplayCategory.name],
+        'fl': 'latitude and longitude and postedDate and title',
+        'rows': 2700
+    };
+
+    jQuery.ajax({
+      'url': 'http://localhost:8983/solr/select/',
+      'data': param,
+      'dataType': 'jsonp',
+      'jsonp': 'json.wrf',
+      'success': function(responses) {
+        var data = responses.response.docs;
+        var dateFormat = d3.time.format("%Y-%m-%dT00:00:00Z");
+
+        for (var i = 0; i < data.length; i++) {
+          var point = [data[i].longitude, data[i].latitude];
+          var date = dateFormat.parse(data[i].postedDate);
+          data[i]['point'] = point;
+          data[i]['colorBase'] = getDateOrder(date.getYear(), date.getMonth());
+        }
+
+        jQuery(document).ajaxComplete(function(){
+              svg.selectAll("circle").remove();
+
+              var circles = svg.selectAll("circle")
+                            .data(data).enter()
+                            .append("circle")
+                            .attr("cx", function (d) { return projection(d.point)[0]; })
+                            .attr("cy", function (d) { return projection(d.point)[1]; })
+                            .attr("r", function (d) { return "15px"; })
+                            .style("fill", function(d) { return color(d.colorBase); })
+                            .style("fill-opacity", 0.6);
+
+              $('svg circle').tipsy({ 
+                gravity: 'w', 
+                html: true, 
+                title: function() {
+                  var d = this.__data__;
+                  var tmp = "";
+                  for(var key in d){
+                      if (key === 'point'){
+                        continue;
+                      }
+                      tmp += '<div style="text-align:left;">'+key+': <span style="color: yellow;">' + d[key] + '</span>';
+                  }
+                  return tmp;
+                }
+              });
+
+              var count = -1;
+              var refreshIntervalId = setInterval(function(){
+                count++;
+                svg.selectAll("circle")
+                  .style('visibility','')
+                  .filter(function(c){
+                    return c.colorBase !== count; 
+                  })
+                  .style('visibility', "hidden");
+                  $('#datebar').html(getDateString(count));
+              }, 3000);
+              if(count > 15){
+                 clearInterval(refreshIntervalId);
+              }
+          }); // end of ajaxComplete
+      }
     });
   }
 });

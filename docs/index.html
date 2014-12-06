@@ -30,7 +30,7 @@
       stroke-width: .5px;
     }
 
-    #sidebar {
+    #sidebar, #datebar {
       position:absolute;
       left:50px;
       bottom: 0px;
@@ -56,10 +56,17 @@
           <option value="">-- choose company --</option>
         </select>
       </div>
+      <div ng-show="taskID == 'Task4'">
+        <select ng-model="selectDisplayCategory" ng-options="c.name for c in displayCategories" ng-change="categoriesChangeOverTime()">
+          <option value="">-- choose job category--</option>
+        </select>
+      </div>
     </div>
   </div>
   <svg id="sidebar">
   </svg>
+  <div id="datebar">
+  </div>
 
     <script type="text/javascript" src="js/app.js"></script>
 </body>
