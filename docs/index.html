@@ -8,7 +8,7 @@
   <script type="text/javascript" src="../dist/jquery.tipsy.js"></script>
   <link href="../dist/tipsy.css" rel="stylesheet" type="text/css" />
   <style>
-    select {
+    #nav {
       position: fixed;
       top: 0px;
       left: 10px;
@@ -40,11 +40,18 @@
 
   </style>
 </head>
-<body ng-controller="MainCtrl">
+<body ng-controller="MainCtrl" ng-init="taskID = 0">
   <div id="main">
-    <select ng-model="selectDisplayMethod" ng-options="dm.name for dm in displayMethods" ng-change="displayByMethod(selectDisplayMethod.name)">
-      <option value="">-- choose display method --</option>
-    </select>
+    <div id="nav">
+      <select ng-model="selectDisplayTask" ng-options="dt.name for dt in displayTasks" ng-change="taskID = selectDisplayTask.name; displayByTask(selectDisplayTask.name);">
+        <option value="">-- choose task --</option>
+      </select>
+      <div ng-show="taskID == 'Task1'">
+        <select ng-model="selectDisplayMethod" ng-options="dm.name for dm in displayMethods" ng-change="displayByMethod(selectDisplayMethod.name)">
+          <option value="">-- choose display method --</option>
+        </select>
+      </div>
+    </div>
   </div>
   <svg id="sidebar">
   </svg>

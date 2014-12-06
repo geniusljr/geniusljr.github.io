@@ -76,6 +76,13 @@ app.controller('MainCtrl', function($scope){
     return jobTypeArr;
   }
     
+  $scope.displayTasks = [
+    {name: "Task1"},
+    {name: "Task2"},
+    {name: "Task3"},
+    {name: "Task4"}
+  ];
+
   $scope.displayMethods = [
     {name: "Country"},
     {name: "Company"},
@@ -83,6 +90,18 @@ app.controller('MainCtrl', function($scope){
     {name: "Salary"}
   ];
 
+  $scope.displayByTask = function(task) {
+    switch(task){
+      case "Task1":
+        return;
+      case "Task2":
+        return;
+      case "Task3":
+        return;
+      case "Task4":
+        return;
+    }
+  }
 
   $scope.companiesChangeOverTime = function() {
     var points = new Array();
