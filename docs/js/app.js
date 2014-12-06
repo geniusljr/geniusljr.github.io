@@ -181,6 +181,10 @@ app.controller('MainCtrl', function($scope){
   }
 
   $scope.companiesChangeOverTime = function() {
+    svg.selectAll("circle").remove();
+    d3.select("#sidebar").selectAll("g").remove();
+    $("#datebar").empty();
+
     var points = new Array();
     var param = {
         'wt':'json',
@@ -253,6 +257,10 @@ app.controller('MainCtrl', function($scope){
   }
 
   $scope.displayByMethod = function(){
+    svg.selectAll("circle").remove();
+    d3.select("#sidebar").selectAll("g").remove();
+    $("#datebar").empty();
+    
     if($scope.taskID === 'Task3'){
       $scope.selectDisplayMethod = {
         name: 'Company'
@@ -409,6 +417,10 @@ app.controller('MainCtrl', function($scope){
   }
 
   $scope.categoriesChangeOverTime = function(){
+    svg.selectAll("circle").remove();
+    d3.select("#sidebar").selectAll("g").remove();
+    $("#datebar").empty();
+
     var points = new Array();
     var param = {
         'wt':'json',
