@@ -259,14 +259,10 @@ app.controller('MainCtrl', function($scope){
                     return color(d[0]);
                 })
                 .on('click', function(d){
-                  console.log(d[0]);
-                  $("circle")
-                  .style('visibility', function(c){
-                      console.log(this);
-                      if(c.attr('data-name') !== d[0]){
-                        return "hidden";
-                      }
-                  });
+                  svg.selectAll("circle")
+                  .style('visibility','')
+                  .filter(function(c){ return d[0] != c.colorBase; })
+                  .style('visibility', "hidden");
                 });
 
               legend.append('text')
