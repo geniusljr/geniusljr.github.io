@@ -83,6 +83,10 @@ app.controller('MainCtrl', function($scope){
     }
     return salary.toLowerCase();
   }
+
+  function getDateOrder(year, month) {
+    return (year-110)*4+(month/3);
+  }
     
   $scope.displayTasks = [
     {name: "Task1"},
@@ -132,9 +136,9 @@ app.controller('MainCtrl', function($scope){
 
         for (var i = 0; i < data.length; i++) {
           var point = [data[i].longitude, data[i].latitude];
-          var month = dateFormat.parse(data[i].postedDate).getMonth();
+          var date = dateFormat.parse(data[i].postedDate);
           data[i]['point'] = point;
-          data[i]['month'] = month;
+          data[i]['colorBase'] = getDateOrder(date.getYear(), date.getMonth());
         }
 
         jQuery(document).ajaxComplete(function(){
