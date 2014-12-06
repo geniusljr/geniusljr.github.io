@@ -51,6 +51,11 @@
           <option value="">-- choose display method --</option>
         </select>
       </div>
+      <div ng-show="taskID == 'Task2'">
+        <select ng-model="selectDisplayCompany" ng-options="c.name for c in displayCompanies" ng-change="companiesChangeOverTime()">
+          <option value="">-- choose company --</option>
+        </select>
+      </div>
     </div>
   </div>
   <svg id="sidebar">

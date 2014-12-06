@@ -27,7 +27,7 @@ app.controller('MainCtrl', function($scope){
   var color = d3.scale.category20();
   var radius = d3.scale.sqrt()
       .domain([0, 100])
-      .range([2, 7]);
+      .range([2, 10]);
 
   svg.append("rect")
       .attr("class", "overlay")
@@ -98,11 +98,27 @@ app.controller('MainCtrl', function($scope){
     {name: "Salary"}
   ];
 
+  $scope.displayCompanies = [
+    {name: "Activos"},
+    {name: "Adecco Argentina S.A."},
+    {name: "Manpower"},
+    {name: "SENSI s.r.l."},
+    {name: "Guía Laboral SRL"},
+    {name: "Activos S.A"},
+    {name: "Grupo Gestión"},
+    {name: "Iss Personal Temporario S.R.L."},
+    {name: "Randstad"},
+    {name: "Accionplus"},
+  ];
+  $scope.selectDisplayCompany = {};
+  $scope.selectDisplayCompany.name = "Activos";
+
   $scope.displayByTask = function(task) {
     switch(task){
       case "Task1":
         return;
       case "Task2":
+        this.companiesChangeOverTime();
         return;
       case "Task3":
         return;
@@ -116,7 +132,7 @@ app.controller('MainCtrl', function($scope){
     var param = {
         'wt':'json',
         'q':'*:*', 
-        'fq': 'company:\"SENSI s.r.l.\"',
+        'fq': 'company:\"' + $scope.selectDisplayCompany.name + '\"',
         'fl': 'latitude and longitude and postedDate',
         'rows': 2700
     };
