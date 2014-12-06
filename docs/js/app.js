@@ -75,6 +75,14 @@ app.controller('MainCtrl', function($scope){
     var jobTypeArr = jobType.split(", ");
     return jobTypeArr;
   }
+
+  function getSalary(salary) {
+    salary = salary.replace(/[^\w\s]/g, '');
+    if (salary.length == 0 || salary == "0") {
+      return "unknown";
+    }
+    return salary.toLowerCase();
+  }
     
   $scope.displayMethods = [
     {name: "Country"},
@@ -166,6 +174,7 @@ app.controller('MainCtrl', function($scope){
           console.log(data.length);
 
           var categoryCount = [];
+          var salaries = new Array();
 
           for(var i = 0; i < data.length; i++){
               var point = [data[i].longitude, data[i].latitude];
@@ -181,7 +190,11 @@ app.controller('MainCtrl', function($scope){
                   colorBase = getJobType(data[i].jobtype);
                   break;
                 case "Salary":
-                  colorBase = data[i].salary;
+                  colorBase = getSalary(data[i].salary);
+                  if (salaries.indexOf(colorBase) == -1) {
+                    salaries.push(colorBase);
+                    console.log(salaries);
+                  }
                   break;
               }
               data[i]['colorBase'] = colorBase;
@@ -219,7 +232,7 @@ app.controller('MainCtrl', function($scope){
                             .style("fill", function(d) { return color(d.colorBase); })
                             .style("fill-opacity", 1);
 
-              $('svg circle').tipsy({ 
+              $('svg circle').tipsy({
                 gravity: 'w', 
                 html: true, 
                 title: function() {
