@@ -85,7 +85,7 @@ app.controller('MainCtrl', function($scope){
         'q':'*:*', 
         'fq': 'company:\"SENSI s.r.l.\"',
         'fl': 'latitude and longitude and postedDate',
-        'rows': 27000
+        'rows': 2700
     };
 
     jQuery.ajax({
@@ -147,7 +147,7 @@ app.controller('MainCtrl', function($scope){
         'wt':'json',
         'q':'*:*', 
         'fl': 'latitude and longitude and company and salary and location2 and jobtype',
-        'rows': 27000
+        'rows': 2700
     };
 
     jQuery.ajax({
@@ -209,6 +209,7 @@ app.controller('MainCtrl', function($scope){
                             .attr("cx", function (d) { return projection(d.point)[0]; })
                             .attr("cy", function (d) { return projection(d.point)[1]; })
                             .attr("r", function (d) { return d.size; })
+                            .attr("data-name", function(d) { return d.colorBase; })
                             .style("fill", function(d) { return color(d.colorBase); })
                             .style("fill-opacity", 1);
 
@@ -256,6 +257,16 @@ app.controller('MainCtrl', function($scope){
                 .attr("height", 18)
                 .style("fill", function(d){
                     return color(d[0]);
+                })
+                .on('click', function(d){
+                  console.log(d[0]);
+                  $("circle")
+                  .style('visibility', function(c){
+                      console.log(this);
+                      if(c.attr('data-name') !== d[0]){
+                        return "hidden";
+                      }
+                  });
                 });
 
               legend.append('text')
