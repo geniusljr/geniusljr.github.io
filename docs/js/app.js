@@ -69,6 +69,12 @@ app.controller('MainCtrl', function($scope){
     }
     return country.toLowerCase();
   }
+
+  var JOB_TYPES = ["Tiempo Completo", "Medio Tiempo", "Por Horas", "Temporal"];
+  function getJobType(jobType) {
+    var jobTypeArr = jobType.split(", ");
+    return jobTypeArr;
+  }
     
   $scope.displayMethods = [
     {name: "Country"},
@@ -146,7 +152,7 @@ app.controller('MainCtrl', function($scope){
     var param = {
         'wt':'json',
         'q':'*:*', 
-        'fl': 'latitude and longitude and company and salary and location2 and jobtype',
+        'fl': 'latitude and longitude and company and salary and location and jobtype',
         'rows': 2700
     };
 
@@ -166,14 +172,13 @@ app.controller('MainCtrl', function($scope){
               var colorBase = null;
               switch($scope.selectDisplayMethod.name) {
                 case "Country":
-                  colorBase = getCountryName(data[i].location2);
+                  colorBase = getCountryName(data[i].location);
                   break;
                 case "Company":
                   colorBase = data[i].company;
-                  
                   break;
                 case "JobType":
-                  colorBase = data[i].jobtype;
+                  colorBase = getJobType(data[i].jobtype);
                   break;
                 case "Salary":
                   colorBase = data[i].salary;
@@ -230,19 +235,22 @@ app.controller('MainCtrl', function($scope){
               });
 
               var sortedCategoryCount = [];
-              for (var c in categoryCount) {
-                if (c != null)
-                  sortedCategoryCount.push([c, categoryCount[c]]);
+              if ($scope.selectDisplayMethod.name = "JobType") {
+                for (var i = 0; i < JOB_TYPES.length; i++) {
+                  sortedCategoryCount.push([JOB_TYPES[i]]);
+                }
+              } else {
+                for (var c in categoryCount) {
+                  if (c != null)
+                    sortedCategoryCount.push([c, categoryCount[c]]);
+                }
+                sortedCategoryCount.sort(function(a, b) {
+                  return b[1] - a[1];
+                });
               }
-              sortedCategoryCount.sort(function(a, b) {
-                return b[1] - a[1];
-              });
               
               sortedCategoryCount = sortedCategoryCount.slice(0, 10);
               console.log(sortedCategoryCount.length);
-              for (var i = 0; i < 10; i++) {
-                console.log(sortedCategoryCount[i]);
-              }
               
               var legend = d3.select("#sidebar").selectAll("svg")
                 .data(sortedCategoryCount)
@@ -261,7 +269,16 @@ app.controller('MainCtrl', function($scope){
                 .on('click', function(d){
                   svg.selectAll("circle")
                   .style('visibility','')
-                  .filter(function(c){ return d[0] != c.colorBase; })
+                  .style('fill', function(c){
+                    return color(d[0]);
+                  })
+                  .filter(function(c){ 
+                    if ($scope.selectDisplayMethod.name != "JobType") {
+                      return d[0] != c.colorBase; 
+                    } else {
+                      return c.colorBase.indexOf(d[0]) == -1;
+                    }
+                  })
                   .style('visibility', "hidden");
                 });
 
