@@ -122,8 +122,6 @@ app.controller('MainCtrl', function($scope){
     {name: "Randstad"},
     {name: "Accionplus"},
   ];
-  $scope.selectDisplayCompany = {};
-  $scope.selectDisplayCompany.name = "Activos";
 
   $scope.displayCategories = [
     {
@@ -175,7 +173,7 @@ app.controller('MainCtrl', function($scope){
         this.displayByMethod();
         return;
       case "Task4":
-        this.categoriesOverTime();
+        this.categoriesChangeOverTime();
         return;
     }
   }
@@ -238,18 +236,20 @@ app.controller('MainCtrl', function($scope){
                 }
               });
 
+              svg.selectAll("circle").style('visibility', "hidden");
               var count = -1;
-              setInterval(function(){
-                count = (++count) % 15;
+              var refreshIntervalId = setInterval(function(){
+                count++;
                 svg.selectAll("circle")
-                  .style('visibility','')
                   .filter(function(c){
-                    return c.colorBase !== count; 
+                    return c.colorBase === count; 
                   })
-                  .style('visibility', "hidden");
-
+                  .style('visibility','')
                   $('#datebar').html(getDateString(count));
-              }, 3000);
+                  if(count > 15){
+                    clearInterval(refreshIntervalId);
+                  }
+              }, 1000);
           }); // end of ajaxComplete
       }
     });
@@ -260,7 +260,7 @@ app.controller('MainCtrl', function($scope){
     svg.selectAll("circle").remove();
     d3.select("#sidebar").selectAll("g").remove();
     $("#datebar").empty();
-    
+
     if($scope.taskID === 'Task3'){
       $scope.selectDisplayMethod = {
         name: 'Company'
@@ -474,20 +474,22 @@ app.controller('MainCtrl', function($scope){
                 }
               });
 
+              svg.selectAll("circle")
+                  .style('visibility', "hidden");
+
               var count = -1;
               var refreshIntervalId = setInterval(function(){
                 count++;
                 svg.selectAll("circle")
-                  .style('visibility','')
                   .filter(function(c){
-                    return c.colorBase !== count; 
+                    return c.colorBase === count; 
                   })
-                  .style('visibility', "hidden");
+                  .style('visibility','')
                   $('#datebar').html(getDateString(count));
-              }, 3000);
-              if(count > 15){
-                 clearInterval(refreshIntervalId);
-              }
+                  if(count > 15){
+                    clearInterval(refreshIntervalId);
+                  }
+              }, 1000);
           }); // end of ajaxComplete
       }
     });

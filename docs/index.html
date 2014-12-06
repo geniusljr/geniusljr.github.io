@@ -7,11 +7,12 @@
   <script src="http://d3js.org/topojson.v1.js" charset="utf-8"></script>
   <script type="text/javascript" src="../dist/jquery.tipsy.js"></script>
   <link href="../dist/tipsy.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
   <style>
-    #nav {
-      position: fixed;
-      top: 10px;
-      left: 50px;
+    nav {
+      padding-top: 10px;
+      padding-left: 15px;
     }
     .overlay {
       fill: none;
@@ -35,44 +36,37 @@
       left:50px;
       bottom: 0px;
       width:200px;
-      height:300px;
+      height:250px;
     }
     #datebar {
-      position:absolute;
-      left:50px;
-      top: 100px;
+      padding-left: 20px;
     }
 
   </style>
 </head>
 <body ng-controller="MainCtrl" ng-init="taskID = 0">
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <form class="form-inline" role="form">
+        <select class="form-control" ng-model="selectDisplayTask" ng-options="dt.name for dt in displayTasks" ng-change="taskID = selectDisplayTask.name; displayByTask(selectDisplayTask.name);">
+          <option value="">-- choose task --</option>
+        </select>
+          <select ng-show="taskID == 'Task1'" class="form-control" ng-model="selectDisplayMethod" ng-options="dm.name for dm in displayMethods" ng-change="displayByMethod(selectDisplayMethod.name)">
+            <option value="">-- choose display method --</option>
+          </select>
+          <select ng-show="taskID == 'Task2'" class="form-control" ng-model="selectDisplayCompany" ng-options="c.name for c in displayCompanies" ng-change="companiesChangeOverTime()">
+            <option value="">-- choose company --</option>
+          </select>
+          <select ng-show="taskID == 'Task4'" class="form-control" ng-model="selectDisplayCategory" ng-options="c.name for c in displayCategories" ng-change="categoriesChangeOverTime()">
+            <option value="">-- choose job category--</option>
+          </select>
+          <span id="datebar"></span>
+        </form>
+  </nav>
   <div id="main">
-    <div id="nav">
-      <select ng-model="selectDisplayTask" ng-options="dt.name for dt in displayTasks" ng-change="taskID = selectDisplayTask.name; displayByTask(selectDisplayTask.name);">
-        <option value="">-- choose task --</option>
-      </select>
-      <div ng-show="taskID == 'Task1'">
-        <select ng-model="selectDisplayMethod" ng-options="dm.name for dm in displayMethods" ng-change="displayByMethod(selectDisplayMethod.name)">
-          <option value="">-- choose display method --</option>
-        </select>
-      </div>
-      <div ng-show="taskID == 'Task2'">
-        <select ng-model="selectDisplayCompany" ng-options="c.name for c in displayCompanies" ng-change="companiesChangeOverTime()">
-          <option value="">-- choose company --</option>
-        </select>
-      </div>
-      <div ng-show="taskID == 'Task4'">
-        <select ng-model="selectDisplayCategory" ng-options="c.name for c in displayCategories" ng-change="categoriesChangeOverTime()">
-          <option value="">-- choose job category--</option>
-        </select>
-      </div>
-    </div>
   </div>
   <svg id="sidebar">
   </svg>
-  <div id="datebar">
-  </div>
 
-    <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
 </body>
 </html>
