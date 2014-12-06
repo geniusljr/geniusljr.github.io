@@ -193,7 +193,6 @@ app.controller('MainCtrl', function($scope){
           console.log(data.length);
 
           var categoryCount = [];
-          var salaries = new Array();
 
           for(var i = 0; i < data.length; i++){
               var point = [data[i].longitude, data[i].latitude];
@@ -210,10 +209,6 @@ app.controller('MainCtrl', function($scope){
                   break;
                 case "Salary":
                   colorBase = getSalary(data[i].salary);
-                  if (salaries.indexOf(colorBase) == -1) {
-                    salaries.push(colorBase);
-                    console.log(salaries);
-                  }
                   break;
               }
               data[i]['colorBase'] = colorBase;
