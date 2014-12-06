@@ -207,6 +207,7 @@ app.controller('MainCtrl', function($scope){
 
           jQuery(document).ajaxComplete(function(){
               svg.selectAll("circle").remove();
+              d3.select("#sidebar").selectAll("g").remove();
 
               var circles = svg.selectAll("circle")
                             .data(data).enter()
