@@ -66,9 +66,8 @@ app.controller('MainCtrl', function($scope){
     }
     if (country == null) {
       console.log(location);
-
     }
-    return country;
+    return country.toLowerCase();
   }
     
   $scope.displayMethods = [
@@ -147,7 +146,7 @@ app.controller('MainCtrl', function($scope){
     var param = {
         'wt':'json',
         'q':'*:*', 
-        'fl': 'latitude and longitude and company and salary and location and jobtype',
+        'fl': 'latitude and longitude and company and salary and location2 and jobtype',
         'rows': 27000
     };
 
@@ -167,7 +166,7 @@ app.controller('MainCtrl', function($scope){
               var colorBase = null;
               switch($scope.selectDisplayMethod.name) {
                 case "Country":
-                  colorBase = getCountryName(data[i].location);
+                  colorBase = getCountryName(data[i].location2);
                   break;
                 case "Company":
                   colorBase = data[i].company;
@@ -180,7 +179,7 @@ app.controller('MainCtrl', function($scope){
                   colorBase = data[i].salary;
                   break;
               }
-              data[i]['colorBase'] = colorBase.toLowerCase();
+              data[i]['colorBase'] = colorBase;
               data[i]['point'] = point;
               if (colorBase == null) {
                 continue;
@@ -211,7 +210,7 @@ app.controller('MainCtrl', function($scope){
                             .attr("cy", function (d) { return projection(d.point)[1]; })
                             .attr("r", function (d) { return d.size; })
                             .style("fill", function(d) { return color(d.colorBase); })
-                            .style("fill-opacity", 0.5);
+                            .style("fill-opacity", 1);
 
               $('svg circle').tipsy({ 
                 gravity: 'w', 
@@ -244,11 +243,28 @@ app.controller('MainCtrl', function($scope){
                 console.log(sortedCategoryCount[i]);
               }
               
-
-              d3.select("body").selectAll("div")
+              var legend = d3.select("#sidebar").selectAll("svg")
                 .data(sortedCategoryCount)
-                .enter().append("div")
-                .text(function(d) { return d[0]; });
+                .enter().append("g")
+                .attr("class", "legend")
+                .attr("transform", function(d, i){
+                  return "translate(0," + i*20 +")";
+                });
+
+              legend.append('rect')
+                .attr("width", 18)
+                .attr("height", 18)
+                .style("fill", function(d){
+                    return color(d[0]);
+                });
+
+              legend.append('text')
+                .attr("x", 40)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .text(function(d){
+                    return d[0];
+                });
 
           }); // end of ajaxComplete
       } // end of success
