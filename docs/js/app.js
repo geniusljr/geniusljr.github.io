@@ -24,10 +24,10 @@ app.controller('MainCtrl', function($scope){
 
   var g = svg.append("g");
 
-  var color = d3.scale.category20b();
+  var color = d3.scale.category20();
   var radius = d3.scale.sqrt()
       .domain([0, 100])
-      .range([0, 5]);
+      .range([2, 7]);
 
   svg.append("rect")
       .attr("class", "overlay")
@@ -64,6 +64,10 @@ app.controller('MainCtrl', function($scope){
     if (country == "Lago Buenos Aires") {
       country = "Argentina";
     }
+    if (country == null) {
+      console.log(location);
+
+    }
     return country;
   }
     
@@ -74,6 +78,67 @@ app.controller('MainCtrl', function($scope){
     {name: "Salary"}
   ];
 
+
+  $scope.companiesChangeOverTime = function() {
+    var points = new Array();
+    var param = {
+        'wt':'json',
+        'q':'*:*', 
+        'fq': 'company:\"SENSI s.r.l.\"',
+        'fl': 'latitude and longitude and postedDate',
+        'rows': 27000
+    };
+
+    jQuery.ajax({
+      'url': 'http://localhost:8983/solr/select/',
+      'data': param,
+      'dataType': 'jsonp',
+      'jsonp': 'json.wrf',
+      'success': function(responses) {
+        var data = responses.response.docs;
+        var dateFormat = d3.time.format("%Y-%m-%dT00:00:00Z");
+
+        for (var i = 0; i < data.length; i++) {
+          var point = [data[i].longitude, data[i].latitude];
+          var month = dateFormat.parse(data[i].postedDate).getMonth();
+          data[i]['point'] = point;
+          data[i]['month'] = month;
+        }
+
+        jQuery(document).ajaxComplete(function(){
+              svg.selectAll("circle").remove();
+
+              var circles = svg.selectAll("circle")
+                            .data(data).enter()
+                            .append("circle")
+                            .attr("cx", function (d) { return projection(d.point)[0]; })
+                            .attr("cy", function (d) { return projection(d.point)[1]; })
+                            .attr("r", function (d) { return "15px"; })
+                            .style("fill", function(d) { return color(d.month); })
+                            .style("fill-opacity", 0.6);
+
+              $('svg circle').tipsy({ 
+                gravity: 'w', 
+                html: true, 
+                title: function() {
+                  var d = this.__data__;
+                  var tmp = "";
+                  for(var key in d){
+                      if (key === 'point'){
+                        continue;
+                      }
+                      tmp += '<div style="text-align:left;">'+key+': <span style="color: yellow;">' + d[key] + '</span>';
+                  }
+                  return tmp;
+                }
+              });
+
+
+          }); // end of ajaxComplete
+      }
+    });
+
+  }
 
 
 
@@ -93,10 +158,11 @@ app.controller('MainCtrl', function($scope){
       'jsonp': 'json.wrf',
       'success': function(responses) { 
           var data = responses.response.docs;
+          console.log(data.length);
 
-          var companyCount = [];
+          var categoryCount = [];
 
-          for(var i=0; i<data.length; i++){
+          for(var i = 0; i < data.length; i++){
               var point = [data[i].longitude, data[i].latitude];
               var colorBase = null;
               switch($scope.selectDisplayMethod.name) {
@@ -105,11 +171,7 @@ app.controller('MainCtrl', function($scope){
                   break;
                 case "Company":
                   colorBase = data[i].company;
-                  if (colorBase in companyCount) {
-                    companyCount[colorBase] = companyCount[colorBase]+1;
-                  } else {
-                    companyCount[colorBase] = 1;
-                  }
+                  
                   break;
                 case "JobType":
                   colorBase = data[i].jobtype;
@@ -120,17 +182,24 @@ app.controller('MainCtrl', function($scope){
               }
               data[i]['colorBase'] = colorBase;
               data[i]['point'] = point;
+              if (colorBase == null) {
+                continue;
+              }
+              if (colorBase in categoryCount) {
+                categoryCount[colorBase] = categoryCount[colorBase]+1;
+              } else {
+                categoryCount[colorBase] = 1;
+              }
           }
 
           for (var i = 0; i < data.length; i++) {
             if ($scope.selectDisplayMethod.name == "Company") {
-              data[i]['size'] = radius(companyCount[data[i].company]);
+              data[i]['size'] = radius(categoryCount[data[i].company]);
             } else {
               data[i]['size'] = "2px";
             }
           }
 
-          console.log(companyCount);
 
           jQuery(document).ajaxComplete(function(){
               svg.selectAll("circle").remove();
@@ -159,6 +228,27 @@ app.controller('MainCtrl', function($scope){
                   return tmp;
                 }
               });
+
+              var sortedCategoryCount = [];
+              for (var c in categoryCount) {
+                if (c != null)
+                  sortedCategoryCount.push([c, categoryCount[c]]);
+              }
+              sortedCategoryCount.sort(function(a, b) {
+                return b[1] - a[1];
+              });
+              
+              sortedCategoryCount = sortedCategoryCount.slice(0, 10);
+              console.log(sortedCategoryCount.length);
+              for (var i = 0; i < 10; i++) {
+                console.log(sortedCategoryCount[i]);
+              }
+              
+
+              d3.select("body").selectAll("div")
+                .data(sortedCategoryCount)
+                .enter().append("div")
+                .text(function(d) { return d[0]; });
 
           }); // end of ajaxComplete
       } // end of success
