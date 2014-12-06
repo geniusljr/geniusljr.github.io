@@ -70,6 +70,16 @@ app.controller('MainCtrl', function($scope){
     return country.toLowerCase();
   }
 
+  var SOUTH_NAME = ['colombia', 'argentina', 'venezuela', 'ecuador'];
+  function isSouthAmerica(name){
+    if($.inArray(name, SOUTH_NAME) > -1){
+        console.log(name);
+        return true;
+    }else{
+        return false;
+    }
+  }
+
   var JOB_TYPES = ["Tiempo Completo", "Medio Tiempo", "Por Horas", "Temporal"];
   function getJobType(jobType) {
     var jobTypeArr = jobType.split(", ");
@@ -209,6 +219,9 @@ app.controller('MainCtrl', function($scope){
         }
 
         jQuery(document).ajaxComplete(function(){
+              if($scope.taskID !== 'Task2') {
+                return;
+              }
               svg.selectAll("circle").remove();
 
               var circles = svg.selectAll("circle")
@@ -325,6 +338,9 @@ app.controller('MainCtrl', function($scope){
 
 
           jQuery(document).ajaxComplete(function(){
+              if($scope.taskID === 'Task2' || $scope.taskID === 'Task4') {
+                return;
+              }
               svg.selectAll("circle").remove();
               d3.select("#sidebar").selectAll("g").remove();
 
@@ -336,7 +352,13 @@ app.controller('MainCtrl', function($scope){
                             .attr("r", function (d) { return d.size; })
                             .attr("data-name", function(d) { return d.colorBase; })
                             .style("fill", function(d) { return color(d.colorBase); })
-                            .style("fill-opacity", 1);
+                            .style("fill-opacity", function(d){ 
+                                if($scope.taskID !== 'Task3' || ($scope.taskID === 'Task3' && isSouthAmerica(getCountryName(d.location2)))){
+                                  return 1;
+                                }else{
+                                  return 0;
+                                }
+                            });
 
               $('svg circle').tipsy({
                 gravity: 'w', 
@@ -447,6 +469,9 @@ app.controller('MainCtrl', function($scope){
         }
 
         jQuery(document).ajaxComplete(function(){
+              if($scope.taskID !== 'Task4') {
+                return;
+              }
               svg.selectAll("circle").remove();
 
               var circles = svg.selectAll("circle")
