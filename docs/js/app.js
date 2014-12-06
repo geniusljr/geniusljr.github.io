@@ -236,7 +236,7 @@ app.controller('MainCtrl', function($scope){
               });
 
               var sortedCategoryCount = [];
-              if ($scope.selectDisplayMethod.name = "JobType") {
+              if ($scope.selectDisplayMethod.name == "JobType") {
                 for (var i = 0; i < JOB_TYPES.length; i++) {
                   sortedCategoryCount.push([JOB_TYPES[i]]);
                 }
