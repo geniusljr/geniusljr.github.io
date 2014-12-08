@@ -1,0 +1,41 @@
+{
+ "name": "Personal Page",
+ "children": [
+  {
+   "name": "Education",
+   "children": [
+      {"name": "Peking University", "size": 50},
+      {"name": "University of Southern California", "size": 50}
+   ]
+  },
+  {
+    "name": "Work Experience",
+    "children": [
+      {"name": "Amazon", "size": 50},
+      {"name": "Microsoft", "size": 50},
+      {"name": "PKU SEI", "size": 50}
+    ]
+  },
+  {
+    "name": "Projects",
+    "children": [
+      {"name": "Amazon", "size": 50},
+      {"name": "Microsoft", "size": 50},
+      {"name": "PKU SEI", "size": 50},
+      {"name": "Microsoft", "size": 50},
+      {"name": "PKU SEI", "size": 50}
+    ]
+  },
+  {
+    "name": "Leadership",
+    "children": [
+      {"name": "Microsoft", "size": 50},
+      {"name": "PKU SEI", "size": 50}
+    ]
+  },
+  { "name": "Github", "size": 20 },
+  { "name": "Facebook", "size": 20 },
+  { "name": "LinkedIn", "size": 20 },
+  { "name": "Instagram", "size": 20 }
+ ]
+}

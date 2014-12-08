@@ -1,0 +1,45 @@
+{
+ "name": "income after tax",
+ "children": [
+  {
+   "name": "Average Annual Expenditure",
+   "children": [
+      {"name": "Food", "size": 10.2},
+      {"name": "Alcoholic beverages", "size": 1.2},
+      {
+        "name": "Housing", 
+        "children": [
+          {
+            "name": "Shelter", 
+            "children": [
+              {"name": "Owned dwellings", "size": 10.6},
+              {"name": "Mortgage interest and charges", "size": 5.0},
+              {"name": "Property taxes", "size": 3.3},
+              {"name": "Maintenance, repairs, insurance, other expenses", "size": 2.3}
+            ]
+          },
+          {"name": "Utilities, fuels, and public services", "size": 8.1},
+          {"name": "Household operations", "size": 2.1},
+          {"name": "Housekeeping supplies", "size": 1.2},
+          {"name": "Household furnishings and equipment", "size": 2.7}
+
+        ]
+      },
+      {"name": "Apparel and services", "size": 4.0},
+      {"name": "Transportation", "size": 16.4},
+      {"name": "Health care", "size": 6.6},
+      {"name": "Personal care products and services", "size": 1.4},
+      {"name": "Entertainment", "size": 5.6},
+      {"name": "Reading", "size": 0.5},
+      {"name": "Education", "size": 2.2},
+      {"name": "Tobacco products", "size": 0.0},
+      {"name": "Miscellaneous", "size": 1.8},
+      {"name": "Personal insurance and pensions", "size": 9.4},
+      {"name": "Cash contributions", "size": 3.6}
+   ]
+  },
+  {
+    "name": "Others", "size": 12.2
+  }
+ ]
+}

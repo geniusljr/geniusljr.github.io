@@ -1,0 +1,70 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #fff;
+  height: 700px;
+  margin-top: 10px;
+}
+
+#main {
+  float: left;
+  width: 100%;
+}
+
+#sidebar {
+  float: right;
+  width: 100px;
+}
+
+#sequence {
+  width: 600px;
+  height: 70px;
+}
+
+#sequence text, #legend text {
+  font-weight: 600;
+  fill: #fff;
+}
+
+#chart {
+  position: absolute;
+  left:200px;
+  margin-top: 60px;
+}
+
+#chart path {
+  stroke: #fff;
+}
+
+#bio {
+  position: absolute;
+  top: 160px;
+  left: 120px;
+  width: 200px;
+  text-align: center;
+  color: #666;
+  z-index: -1;
+}
+
+#bio p {
+  margin: 0px;
+}
+
+#bio #name {
+  margin-left:50px;
+  font-size:24pt;
+}
+#bio #email {
+  font-size:14pt;
+}
+
+#percentage {
+  font-size: 2.5em;
+}
+
+#trail {
+  position:absolute;
+  left:580px;
+  top:500px;
+}
